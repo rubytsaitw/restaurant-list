@@ -19,15 +19,12 @@ app.get('/', (req, res) => {
 
 // queryString
 app.get('/search', (req, res) => {
-  const keyword = req.query.keyword.toLowerCase()
+  const keyword = req.query.keyword.toLowerCase().trim()
   const restaurants = restaurantList.results.filter(restaurant => {
     return restaurant.name.toLowerCase().includes(keyword) ||
       restaurant.category.toLowerCase().includes(keyword)
   })
-  if (!restaurants.length) { res.render('nomatch') }
-  else {
-    res.render('index', { restaurants: restaurants, keyword: keyword })
-  }
+  res.render('index', { restaurants: restaurants, keyword: keyword })
 })
 
 // params

@@ -59,9 +59,9 @@ header {
 }
 
 .card-title{
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .restaurant-category {
@@ -79,22 +79,19 @@ header {
 }
 
 @media screen and (max-width: 992px) {
-  
-  .card img{
+  .card img {
     height: 115px;
   }
 }
 
 @media screen and (max-width: 768px) {
-  
   .restaurant-show-title {
     font-size: 2rem;
   }
 }
 
 @media screen and (max-width: 575px) {
-  
-  .card img{
+  .card img {
     height: auto;
   }
   
