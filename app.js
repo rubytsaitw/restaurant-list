@@ -4,9 +4,11 @@ const app = express()
 const port = 3000
 const mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost/restaurant')
-mongoose.connect('mongodb://localhost/todo-list', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://localhost/restaurant', { useNewUrlParser: true, useUnifiedTopology: true })
 const exphbs = require('express-handlebars')
-const restaurantList = require('./restaurant.json')
+const Restaurant = require('./models/restaurant')
+// const restaurantList = require('./restaurant.json')
+
 
 // Status of connection with database
 const db = mongoose.connection
@@ -28,7 +30,11 @@ app.use(express.static('public'))
 
 // Routes setting
 app.get('/', (req, res) => {
-  res.render('index', { restaurants: restaurantList.results })
+  console.log('done')
+  Restaurant.find()
+    .lean()
+    .then(restaurants => res.render('index', { restaurants }))
+    .catch(error => console.error(error))
 })
 
 // queryString
