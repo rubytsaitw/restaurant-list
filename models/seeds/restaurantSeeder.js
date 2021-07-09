@@ -18,7 +18,7 @@ db.once('open', () => {
       category: restaurantList.results[i].category,
       rating: restaurantList.results[i].rating,
       location: restaurantList.results[i].location,
-      goole_map: restaurantList.results[i].google_map,
+      google_map: restaurantList.results[i].google_map,
       phone: restaurantList.results[i].phone,
       description: restaurantList.results[i].description
     })
