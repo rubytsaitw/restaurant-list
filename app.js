@@ -3,9 +3,11 @@ const express = require('express')
 const app = express()
 const port = 3000
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/restaurant')
 mongoose.connect('mongodb://localhost/restaurant', { useNewUrlParser: true, useUnifiedTopology: true })
 const exphbs = require('express-handlebars')
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: true }))
+
 const Restaurant = require('./models/restaurant')
 // const restaurantList = require('./restaurant.json')
 
@@ -35,6 +37,35 @@ app.get('/', (req, res) => {
     .lean()
     .then(restaurants => res.render('index', { restaurants }))
     .catch(error => console.error(error))
+})
+
+app.get('/restaurants/new', (req, res) => {
+  return res.render('new')
+})
+
+app.post('/restaurants', (req, res) => {
+  const name = req.body.name
+  const image = req.body.image
+  const category = req.body.category
+  const rating = req.body.rating
+  const location = req.body.location
+  const goole_map = req.body.goole_map
+  const phone = req.body.phone
+  const description = req.body.description
+
+  return Restaurant.create({
+    name, image, category, rating, location, goole_map, phone, description
+  })
+    .then(() => res.redirect('/'))
+    .catch(error => console.log(error))
+})
+
+app.get('/restaurants/:id', (req, res) => {
+  const id = req.params.id
+  return Restaurant.findById(id)
+    .lean()
+    .then((restaurant) => res.render('detail', { restaurant }))
+    .catch(error => console.log(error))
 })
 
 // queryString
