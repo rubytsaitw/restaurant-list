@@ -10,7 +10,7 @@
 
 ## 專案畫面
 
-![image](https://github.com/rubytsaitw/restaurant-list/blob/main/public/img/index.png)
+![image](https://github.com/rubytsaitw/restaurant-list/blob/main/public/img/index_crud.png)
 
 ![image](https://github.com/rubytsaitw/restaurant-list/blob/main/public/img/show.png)
 
