@@ -33,7 +33,6 @@ app.use(express.static('public'))
 // Routes setting
 // Index
 app.get('/', (req, res) => {
-  console.log('done')
   Restaurant.find()
     .lean()
     .then(restaurants => res.render('index', { restaurants }))
@@ -116,23 +115,17 @@ app.post('/restaurants/:id/delete', (req, res) => {
     .catch(error => console.log(error))
 })
 
-// queryString
+// Search
 app.get('/search', (req, res) => {
   const keyword = req.query.keyword.toLowerCase().trim()
-  const restaurants = restaurantList.results.filter(restaurant => {
-    return restaurant.name.toLowerCase().includes(keyword) ||
-      restaurant.category.toLowerCase().includes(keyword)
-  })
-  res.render('index', { restaurants: restaurants, keyword: keyword })
-})
-
-// params
-app.get('/restaurants/:restaurant_id', (req, res) => {
-  console.log('params')
-  const restaurant = restaurantList.results.find(
-    restaurantList => restaurantList.id.toString() === req.params.restaurant_id
+  Restaurant.find(
+    {
+      $or: [{ name: { $regex: keyword, $options: 'i' } }, { category: { $regex: keyword, $options: 'i' } }]
+    }
   )
-  res.render('show', { restaurant: restaurant })
+    .lean()
+    .then(restaurants => res.render('index', { restaurants, keyword }))
+    .catch(error => console.error(error))
 })
 
 // Start and listen on the Express server
