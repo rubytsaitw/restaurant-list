@@ -31,6 +31,7 @@ app.set('view engine', 'handlebars')
 app.use(express.static('public'))
 
 // Routes setting
+// Index
 app.get('/', (req, res) => {
   console.log('done')
   Restaurant.find()
@@ -39,10 +40,12 @@ app.get('/', (req, res) => {
     .catch(error => console.error(error))
 })
 
+// Create
 app.get('/restaurants/new', (req, res) => {
   return res.render('new')
 })
 
+// Read
 app.post('/restaurants', (req, res) => {
   const name = req.body.name
   const image = req.body.image
@@ -68,6 +71,7 @@ app.get('/restaurants/:id', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// Update
 app.get('/restaurants/:id/edit', (req, res) => {
   const id = req.params.id
   return Restaurant.findById(id)
@@ -103,6 +107,15 @@ app.post('/restaurants/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// Delete
+app.post('/restaurants/:id/delete', (req, res) => {
+  const id = req.params.id
+  return Restaurant.findById(id)
+    .then(restaurant => restaurant.remove())
+    .then(() => res.redirect('/'))
+    .catch(error => console.log(error))
+})
+
 // queryString
 app.get('/search', (req, res) => {
   const keyword = req.query.keyword.toLowerCase().trim()
@@ -115,6 +128,7 @@ app.get('/search', (req, res) => {
 
 // params
 app.get('/restaurants/:restaurant_id', (req, res) => {
+  console.log('params')
   const restaurant = restaurantList.results.find(
     restaurantList => restaurantList.id.toString() === req.params.restaurant_id
   )
