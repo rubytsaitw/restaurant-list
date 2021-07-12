@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-const Restaurant = require('../restaurant') // 載入 restaurant model
+const Restaurant = require('../restaurant')
+
 mongoose.connect('mongodb://localhost/restaurant', { useNewUrlParser: true, useUnifiedTopology: true })
 const db = mongoose.connection
 
@@ -22,7 +23,6 @@ db.once('open', () => {
       phone: restaurantList.results[i].phone,
       description: restaurantList.results[i].description
     })
-
   }
   console.log('done')
 })

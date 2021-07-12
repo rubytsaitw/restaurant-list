@@ -9,8 +9,6 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: true }))
 
 const Restaurant = require('./models/restaurant')
-// const restaurantList = require('./restaurant.json')
-
 
 // Status of connection with database
 const db = mongoose.connection
@@ -81,15 +79,6 @@ app.get('/restaurants/:id/edit', (req, res) => {
 
 app.post('/restaurants/:id/edit', (req, res) => {
   const id = req.params.id
-  const name = req.body.name
-  const image = req.body.image
-  const category = req.body.category
-  const rating = req.body.rating
-  const location = req.body.location
-  const google_map = req.body.google_map
-  const phone = req.body.phone
-  const description = req.body.description
-
   return Restaurant.findById(id)
     .then(restaurant => {
       restaurant.name = req.body.name
