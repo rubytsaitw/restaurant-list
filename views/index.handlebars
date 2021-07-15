@@ -18,10 +18,11 @@
         <div class="input-group align-items-end">
           <select class="form-control" name="sortSelect" id="sortSelect" onchange="submit()">
             <option value="">Sort</option>
-            <option value="sortNameAsc">A>Z</option>
-            <option value="sortNameDesc">Z>A</option>
-            <option value="sortCategory">類別</option>
-            <option value="sortLocation">地區</option>
+            {{#each sortList}}
+            <option value="{{this.value}}" {{#if (isEqual this.value ../sortSelect )}} selected {{/if}}>
+              {{this.title}}
+            </option>
+            {{/each}}
           </select>
         </div>
       </div>

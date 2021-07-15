@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Restaurant = require('../../models/restaurant')
+const sortList = require('../../config/sortList')
 
 
 // Create
@@ -11,13 +12,23 @@ router.get('/new', (req, res) => {
 // Search: 必須要放在'/:id' 前面，否則會被當成某種id
 router.get('/search', (req, res) => {
   const keyword = req.query.keyword.toLowerCase().trim()
+  const sortSelect = req.query.sortSelect
+  const sortMongoose = {
+    nameAsc: { name_en: 'asc' },
+    nameDesc: { name_en: 'desc' },
+    category: { category: 'asc' },
+    location: { location: 'asc' },
+    rating: { rating: 'desc' }
+  }
+
   Restaurant.find(
     {
       $or: [{ name: { $regex: keyword, $options: 'i' } }, { category: { $regex: keyword, $options: 'i' } }]
     }
   )
     .lean()
-    .then(restaurants => res.render('index', { restaurants, keyword }))
+    .sort(sortMongoose[sortSelect])
+    .then(restaurants => res.render('index', { restaurants, keyword, sortList, sortSelect }))
     .catch(error => console.error(error))
 })
 

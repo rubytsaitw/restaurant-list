@@ -3,13 +3,14 @@ const express = require('express')
 const router = express.Router()
 // 引用 Todo model
 const Restaurant = require('../../models/restaurant')
+const sortList = require('../../config/sortList')
 
 // Index
 router.get('/', (req, res) => {
   Restaurant.find()
     .lean()
-    .sort({ _id: 'asc' })
-    .then(restaurants => res.render('index', { restaurants }))
+    .sort()
+    .then(restaurants => res.render('index', { restaurants, sortList }))
     .catch(error => console.error(error))
 })
 
