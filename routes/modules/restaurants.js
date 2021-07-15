@@ -10,20 +10,25 @@ router.get('/new', (req, res) => {
 
 // Read
 router.post('/', (req, res) => {
-  const name = req.body.name
-  const image = req.body.image
-  const category = req.body.category
-  const rating = req.body.rating
-  const location = req.body.location
-  const google_map = req.body.google_map
-  const phone = req.body.phone
-  const description = req.body.description
-
+  const { name, image, category, rating, location, google_map, phone, description } = req.body
   return Restaurant.create({
     name, image, category, rating, location, google_map, phone, description
   })
     .then(() => res.redirect('/'))
     .catch(error => console.log(error))
+})
+
+// Search: 必須要放在'/:id' 前面，否則會被當成某種id
+router.get('/search', (req, res) => {
+  const keyword = req.query.keyword.toLowerCase().trim()
+  Restaurant.find(
+    {
+      $or: [{ name: { $regex: keyword, $options: 'i' } }, { category: { $regex: keyword, $options: 'i' } }]
+    }
+  )
+    .lean()
+    .then(restaurants => res.render('index', { restaurants, keyword }))
+    .catch(error => console.error(error))
 })
 
 router.get('/:id', (req, res) => {
@@ -70,15 +75,4 @@ router.delete('/:id', (req, res) => {
     .catch(error => console.log(error))
 })
 
-// Search
-router.get('/search', (req, res) => {
-  const keyword = req.query.keyword.toLowerCase().trim()
-  Restaurant.find(
-    {
-      $or: [{ name: { $regex: keyword, $options: 'i' } }, { category: { $regex: keyword, $options: 'i' } }]
-    }
-  )
-    .lean()
-    .then(restaurants => res.render('index', { restaurants, keyword }))
-    .catch(error => console.error(error))
-})
+module.exports = router 
