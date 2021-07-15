@@ -8,16 +8,6 @@ router.get('/new', (req, res) => {
   return res.render('new')
 })
 
-// Read
-router.post('/', (req, res) => {
-  const { name, image, category, rating, location, google_map, phone, description } = req.body
-  return Restaurant.create({
-    name, image, category, rating, location, google_map, phone, description
-  })
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
-
 // Search: 必須要放在'/:id' 前面，否則會被當成某種id
 router.get('/search', (req, res) => {
   const keyword = req.query.keyword.toLowerCase().trim()
@@ -45,6 +35,16 @@ router.get('/:id/edit', (req, res) => {
   return Restaurant.findById(id)
     .lean()
     .then((restaurant) => res.render('edit', { restaurant }))
+    .catch(error => console.log(error))
+})
+
+// Read
+router.post('/', (req, res) => {
+  const { name, image, category, rating, location, google_map, phone, description } = req.body
+  return Restaurant.create({
+    name, image, category, rating, location, google_map, phone, description
+  })
+    .then(() => res.redirect('/'))
     .catch(error => console.log(error))
 })
 
