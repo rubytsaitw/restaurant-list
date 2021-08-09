@@ -1,6 +1,6 @@
 module.exports = {
   authenticator: (req, res, next) => {
-    if (req.gitisAuthenticated()) {
+    if (req.isAuthenticated()) {
       return next()
     }
     res.redirect('/users/login')
