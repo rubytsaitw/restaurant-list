@@ -5,8 +5,7 @@ const port = 3000
 const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
-
-const Restaurant = require('./models/restaurant')
+const usePassport = require('./config/passport')
 
 const routes = require('./routes')
 require('./config/mongoose')
@@ -25,7 +24,7 @@ app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(methodOverride('_method'))
-
+usePassport(app)
 app.use(routes)
 
 // Start and listen on the Express server
