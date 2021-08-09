@@ -39,17 +39,15 @@ router.post('/register', (req, res) => {
       if (user) {
         errors.push({ message: 'This email already exists.' })
         return res.render('register', { errors, name, email, password, confirmPassword })
-      }
-      return bcrypt
-        .genSalt(10)
-        .then(salt => bcrypt.hash(password, salt))
-        .then(hash => User.create({
+      } else {
+        return User.create({
           name,
           email,
-          password: hash
-        }))
-        .then(() => res.redirect('/'))
-        .catch(error => console.log(error))
+          password
+        })
+          .then(() => res.redirect('/'))
+          .catch(err => console.log(err))
+      }
     })
 })
 
