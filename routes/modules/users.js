@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const bcrypt = require('bcryptjs')
 const passport = require('passport')
 
 const User = require('../../models/user')
@@ -39,16 +40,18 @@ router.post('/register', (req, res) => {
       if (user) {
         errors.push({ message: 'This email already exists.' })
         return res.render('register', { errors, name, email, password, confirmPassword })
-      } else {
-        return User.create({
+      }
+      return bcrypt
+        .genSalt(10)
+        .then(salt => bcrypt.hash(password, salt))
+        .then(hash => User.create({
           name,
           email,
-          password
-        })
-          .then(() => res.redirect('/'))
-          .catch(err => console.log(err))
-      }
-    })
+          password: hash,
+        }))
+        .then(() => res.redirect('/'))
+        .catch(err => console.log(err))
+      })
 })
 
 router.get('/logout', (req, res) => {
