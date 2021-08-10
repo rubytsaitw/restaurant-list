@@ -1,33 +1,50 @@
+const bcrypt = require('bcryptjs')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const Restaurant = require('../restaurant')
+const User = require('../user')
+const restaurantList = require('../../restaurant.json').results // 載入 restaurant.json
 const db = require('../../config/mongoose')
 
-const restaurantList = require('../../restaurant.json')
+const SEED_USERS = [{
+  name: 'user1',
+  email: 'user1@example.com',
+  password: '12345678',
+  hasRestaurantId: [1, 2, 3]
+},
+{
+  name: 'user2',
+  email: 'user2@example.com',
+  password: '12345678',
+  hasRestaurantId: [4, 5, 6]
+}]
 
-// 助教建議的寫法
-// 不需要for loop, 因為 MongoDB 在 Create 時，如果提供陣列會自動在內部進行 for 迴圈處理。
 db.once('open', () => {
-  Restaurant.create(restaurantList.results)
+  Promise.all(Array.from(SEED_USERS, (SEED_USER, i) => {
+    return bcrypt
+      .genSalt(10)
+      .then(salt => bcrypt.hash(SEED_USER.password, salt))
+      .then(hash =>
+        User.create({
+          name: SEED_USER.name,
+          email: SEED_USER.email,
+          password: hash
+        }))
+      .then(user => {
+        const userId = user._id
+        const restaurants = restaurantList.filter(restaurant => SEED_USER.hasRestaurantId.includes(restaurant.id))
+        restaurants.forEach(restaurant => { restaurant.userId = userId })
+        return Restaurant.create(restaurants)
+      })
+  }))
     .then(() => {
-      db.close();  // 新增
-      console.log('done')
+      console.log('seeder done.')
+      process.exit()
     })
+    .catch(error => console.log(error))
 })
 
-// 我原始的寫法，加上async/await
-// db.once('open', async () => {
-//   for (let i = 0; i < 8; i++) {
-//     await Restaurant.create({
-//       id: restaurantList.results[i].id,
-//       name: restaurantList.results[i].name,
-//       image: restaurantList.results[i].image,
-//       category: restaurantList.results[i].category,
-//       rating: restaurantList.results[i].rating,
-//       location: restaurantList.results[i].location,
-//       google_map: restaurantList.results[i].google_map,
-//       phone: restaurantList.results[i].phone,
-//       description: restaurantList.results[i].description
-//     })
-//   }
-//   db.close()
-//   console.log('seeder done!')
-// })
+// 參考Linus同學的作業
+// https://github.com/Linus-Peng1/AC_restaurant-list-A6/blob/main/models/seeds/restaurantSeeder.js
